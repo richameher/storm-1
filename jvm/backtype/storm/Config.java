@@ -1465,6 +1465,18 @@ public class Config extends HashMap<String, Object> {
     public static final String TOPOLOGY_IMPROVED_CONCURRENCY_MODEL = "topology.improved.concurrency.model";
     public static final Object TOPOLOGY_IMPROVED_CONCURRENCY_MODEL_SCHEMA = Boolean.class;
 
+    public static final String TOPOLOGY_SLO="topology.slo";
+    public static final Object TOPOLOGY_SLO_SCHEMA = ConfigValidation.SLOValidator;
+
+    public static final String TOPOLOGY_UTILITY="topology.utility";
+    public static final Object TOPOLOGY_UTILITY_SCHEMA = ConfigValidation.PositiveNumberValidator;
+
+    public static final String TOPOLOGY_LATENCY_SLO="topology.latency.slo";
+    public static final Object TOPOLOGY_LATENCY_SLO_SCHEMA = ConfigValidation.PositiveNumberValidator; // MUST BE A POSITIVE NUMBER
+
+    public static final String TOPOLOGY_SENSITIVITY ="topology.sensitivity";
+    public static final Object TOPOLOGY_SENSITIVITY_SCHEMA = ConfigValidation.SensitivityValidator;
+
 
     public static void setImprovedConcurrencyModel(Map conf, boolean isOn) {
         conf.put(Config.TOPOLOGY_IMPROVED_CONCURRENCY_MODEL, isOn);
@@ -1472,7 +1484,7 @@ public class Config extends HashMap<String, Object> {
 
     public void setImprovedConcurrencyModel(boolean isOn) {
         setImprovedConcurrencyModel(this, isOn);
-    }    
+    }
 
     public static void setClasspath(Map conf, String cp) {
         conf.put(Config.TOPOLOGY_CLASSPATH, cp);
@@ -1649,4 +1661,62 @@ public class Config extends HashMap<String, Object> {
         conf.put(Config.TOPOLOGY_KRYO_DECORATORS, ret);
         return ret;
     }
+
+
+    public static String getTopologySensitivity(Map conf) {
+        if(!conf.containsKey(Config.TOPOLOGY_SENSITIVITY)) {
+            return new String();
+        } else {
+          return (String) conf.get(Config.TOPOLOGY_SENSITIVITY);
+        }
+    }
+
+    public static double getTopologyLatencySlo(Map conf) {
+        double ret = 0.0;
+        if(!conf.containsKey(Config.TOPOLOGY_LATENCY_SLO)) {
+            ret = 0.0;
+        } else {
+            ret = (double) conf.get(Config.TOPOLOGY_LATENCY_SLO);
+        }
+
+        return ret;
+
+    }
+    public static void setTopologySlo(Map conf, double slo) {
+        conf.put(Config.TOPOLOGY_SLO, slo);
+    }
+
+    public static void setTopologyUtility(Map conf, double utility) {
+        conf.put(Config.TOPOLOGY_UTILITY, utility);
+    }
+
+
+    public void setTopologyUtility(double utility) {
+        setTopologyUtility(this, utility);
+    }
+
+    public static void setTopologyLatencySlo(Map conf, double slo)
+    {
+        conf.put(Config.TOPOLOGY_LATENCY_SLO, slo);
+    }
+
+    public static void setTopologySensitivity(Map conf, String sensitivity) {
+        conf.put(Config.TOPOLOGY_SENSITIVITY, sensitivity);
+    }
+
+    public void setTopologySlo(double slo) {
+        setTopologySlo(this, slo);
+    }
+
+    public void setTopologyLatencySlo(double latency_slo) {
+
+        setTopologyLatencySlo(this, latency_slo);
+    }
+
+    public void setTopologySensitivity(String sensitivity) {
+
+        setTopologySensitivity(this, sensitivity);
+    }
+
+
 }

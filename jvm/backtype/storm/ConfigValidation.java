@@ -37,7 +37,7 @@ public class ConfigValidation {
          */
         public void validateField(String name, Object field) throws IllegalArgumentException;
     }
-    
+
     /**
      * Declares a method for validating configuration values that is nestable.
      */
@@ -46,7 +46,7 @@ public class ConfigValidation {
         public void validateField(String name, Object field) throws IllegalArgumentException {
             validateField(null, name, field);
         }
-        
+
         /**
          * Validates the given field.
          * @param pd describes the parent wrapping this validator.
@@ -78,7 +78,7 @@ public class ConfigValidation {
             }
         };
     }
-    
+
     /**
      * Returns a new NestableFieldValidator for a List of the given Class.
      * @param cls the Class of elements composing the list
@@ -88,14 +88,14 @@ public class ConfigValidation {
     public static NestableFieldValidator listFv(Class cls, boolean nullAllowed) {
       return listFv(fv(cls, false), nullAllowed);
     }
-    
+
     /**
      * Returns a new NestableFieldValidator for a List where each item is validated by validator.
      * @param validator used to validate each item in the list
      * @param nullAllowed whether or not a value of null is valid
      * @return a NestableFieldValidator for a list with each item validated by a different validator.
      */
-    public static NestableFieldValidator listFv(final NestableFieldValidator validator, 
+    public static NestableFieldValidator listFv(final NestableFieldValidator validator,
             final boolean nullAllowed) {
         return new NestableFieldValidator() {
             @Override
@@ -124,19 +124,19 @@ public class ConfigValidation {
      * @param nullAllowed whether or not a value of null is valid
      * @return a NestableFieldValidator for a Map of key to val
      */
-    public static NestableFieldValidator mapFv(Class key, Class val, 
+    public static NestableFieldValidator mapFv(Class key, Class val,
             boolean nullAllowed) {
         return mapFv(fv(key, false), fv(val, false), nullAllowed);
     }
- 
+
     /**
      * Returns a new NestableFieldValidator for a Map.
      * @param key a validator for the keys in the map
      * @param val a validator for the values in the map
      * @param nullAllowed whether or not a value of null is valid
      * @return a NestableFieldValidator for a Map
-     */   
-    public static NestableFieldValidator mapFv(final NestableFieldValidator key, 
+     */
+    public static NestableFieldValidator mapFv(final NestableFieldValidator key,
             final NestableFieldValidator val, final boolean nullAllowed) {
         return new NestableFieldValidator() {
             @SuppressWarnings("unchecked")
@@ -158,7 +158,7 @@ public class ConfigValidation {
             }
         };
     }
-    
+
     /**
      * Validates a list of Numbers.
      */
@@ -345,6 +345,36 @@ public class ConfigValidation {
                 return;
             }
             this.fv.validateField(name, o);
+        }
+    };
+
+    public static Object SLOValidator = new FieldValidator() {
+        @Override
+        public void validateField(String name, Object o) throws IllegalArgumentException {
+            if (o == null) {
+                // A null value is acceptable.
+                return;
+            }
+            if(o instanceof Number) {
+                if(((Number)o).doubleValue() > 0.0 && ((Number)o).doubleValue() <= 1.0  ) {
+                    return;
+                }
+            }
+            throw new IllegalArgumentException("Field " + name + " must be a Positive Number");
+        }
+    };
+
+    public static Object SensitivityValidator = new FieldValidator() {
+        @Override
+        public void validateField(String name, Object o) throws IllegalArgumentException {
+            if (o == null) {
+                // A null value is acceptable.
+                return;
+            }
+            if(o.toString().equals("throughput") || o.toString().equals("latency")) {
+                return;
+            }
+            throw new IllegalArgumentException("Field " + name + " must either be 'throughput' or 'latency'");
         }
     };
 }
