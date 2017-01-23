@@ -68,7 +68,7 @@ k=0
 for i in range(1,len(bolt_filter),1):
     if bolt_filter[i][1]==prev_timestamp:
         aggre[k][1]=aggre[k][1]+1  # keeps a count of the number of tuples
-        aggre[k][0]=float(aggre[k][0])+float(bolt_filter[i][0])/aggre[k][1] #find the avg
+        aggre[k][0]=float(aggre[k][0])+float(bolt_filter[i][0]) #find the avg
     else:
         aggre[k][0]=float(aggre[k][0])/float(aggre[k][1])
         aggre.append([])
