@@ -27,23 +27,29 @@ public class QueuingDelayMetric implements IMetric {
     double sum;
     int cnt;
     String name;
+    String name_bolt;
+    long cal_rate;
+    long prev_time;
+    int queue_count=0;
 
-    public QueuingDelayMetric(String executor_id) {
+    public QueuingDelayMetric(String executor_id, String component_id) {
         sum = 0.0;
         cnt = 0;
         name = new String(executor_id);
+        name_bolt=new String(component_id);
     }
 
-    public void update(long queuing_delay) {
+
+    public void update(double queuing_delay) {
         sum += queuing_delay;
         cnt++;
 
-        if(cnt==500) {
-            Object val = getValueAndReset();
-            LOG.info("RecvQDelay: " + val + " " + System.currentTimeMillis() + " " + name);
-        }
+
+            Object val = queuing_delay;
+            LOG.info("RecvQDelay: " + queuing_delay + " " + System.currentTimeMillis() + " " + name+" "+name_bolt);
+
     }
-    
+
     public Object getValueAndReset() {
         double ret = sum/cnt;
         sum = 0.0;
@@ -51,4 +57,3 @@ public class QueuingDelayMetric implements IMetric {
         return ret;
     }
 }
-
